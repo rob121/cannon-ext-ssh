@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -48,16 +47,10 @@ func handleTerminalWS(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	cmd, err := newShellCommand()
-	if err != nil {
-		log.Printf("pty shell: %v", err)
-		_ = conn.WriteMessage(websocket.TextMessage, []byte("failed to start shell: no usable login shell (set SHELL for the Cannon user)\r\n"))
-		return
-	}
-	ptmx, err := pty.Start(cmd)
+	cmd, ptmx, err := startShellPTY()
 	if err != nil {
 		log.Printf("pty start: %v", err)
-		_ = conn.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("failed to start shell: %v\r\n", err)))
+		_ = conn.WriteMessage(websocket.TextMessage, []byte(shellErrMessage(err)))
 		return
 	}
 	defer func() {

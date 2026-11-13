@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"log"
+	"os"
 
 	"github.com/rob121/cannon/extension"
 )
@@ -17,13 +18,16 @@ const (
 	extensionName        = "cannon-ext-ssh"
 	extensionTitle       = "SSH Terminal"
 	extensionDescription = "Web terminal in Cannon admin (local shell as the extension process user)."
-	extensionVersion     = "0.1.3"
+	extensionVersion     = "0.1.6"
 	updateURLBase        = "https://github.com/rob121/cannon-ext-ssh/releases/download"
 	defaultAdminMenu     = "SSH Terminal"
 	permUse              = "terminal.use"
 )
 
 func main() {
+	if maybeRunDiag(os.Args[1:]) {
+		return
+	}
 	if err := newServer().Run(); err != nil {
 		log.Fatal(err)
 	}

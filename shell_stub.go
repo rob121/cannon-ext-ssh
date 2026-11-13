@@ -7,6 +7,10 @@ import (
 	"os/exec"
 )
 
-func newShellCommand() (*exec.Cmd, error) {
-	return nil, os.ErrInvalid
+func startShellPTY() (*exec.Cmd, *os.File, error) {
+	return nil, nil, os.ErrInvalid
+}
+
+func shellErrMessage(err error) string {
+	return "failed to start shell\r\n"
 }

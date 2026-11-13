@@ -19,5 +19,6 @@ This extension opens a **local shell** in Cannon admin. Commands run as the **sa
 
 - **Forbidden**: your user needs `cannon-ext-ssh.terminal.use` (or administrator `*`).
 - **Session closed immediately**: check that the extension is running and Cannon can reach its socket.
-- **failed to start shell**: Cannon/extensions must run as a Linux user with a real shell (`/bin/bash` or `/bin/sh`). Service accounts using `nologin` cannot open a PTY — use a dedicated user with a login shell or set `SHELL=/bin/bash` in the process environment.
+- **failed to start shell / permission denied**: The OS is blocking fork/exec of a shell (SELinux, AppArmor, or strict systemd `SystemCallFilter`). Check `journalctl` / `ausearch -m avc -ts recent`. Run Cannon under a user allowed to execute `/bin/bash`, or set `CANNON_EXT_SSH_SHELL=/path/to/bash` in the **Cannon** service environment (extensions inherit it).
+- **nologin user**: use a dedicated Linux user with login shell ` /bin/bash`, not `www-data` with `nologin`.
 - **Docker**: the container needs a TTY-capable environment (`/dev/ptmx`); many minimal images work if bash is installed and the process user can run it.
